@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, List, Tuple, Union, overload
-from machine_learning.modeling.model import Model, TInput, TTarget, INPUT_BATCH, INPUT, TARGET_BATCH, TARGET
+from machine_learning.modeling.model import Model, TInput, TTarget, InputBatch, Input, Target
 from torch.nn import Module
 
 PYTORCH_TARGET_BATCH = List[Tuple[TTarget, Any, Any]]
@@ -18,9 +18,9 @@ class PyTorchModel(Model, ABC):
     @overload
     def predict_step_pytorch(self, input: TInput) -> Tuple[TTarget, Any, Any]: ...
     @overload
-    def predict_step_pytorch(self, input: INPUT_BATCH) -> PYTORCH_TARGET_BATCH: ...
+    def predict_step_pytorch(self, input: InputBatch) -> PYTORCH_TARGET_BATCH: ...
     @abstractmethod
-    def predict_step_pytorch(self, input: INPUT) -> PYTORCH_TARGET: ...
+    def predict_step_pytorch(self, input: Input) -> PYTORCH_TARGET: ...
 
-    def predict_step(self, input: INPUT) -> TARGET:
+    def predict_step(self, input: Input) -> Target:
         return self.predict_step_pytorch(input)[0]
