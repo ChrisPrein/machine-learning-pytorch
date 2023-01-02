@@ -2,8 +2,8 @@ from logging import Logger
 from typing import Optional, TypeVar
 import torch
 from ..modeling.pytorch_model import PyTorchModel
-from machine_learning.evaluation.evaluator import Evaluator
-from machine_learning.modeling.model import TInput, TTarget
+from machine_learning.evaluation.evaluator import Evaluator, Input, Target, EvaluatorResult
+from machine_learning import Evaluator, TInput, TTarget
 
 
 TPyTorchModel = TypeVar('TPyTorchModel', bound=PyTorchModel)

@@ -1,6 +1,6 @@
 from logging import Logger
 from typing import Optional, TypeVar
-from machine_learning.training.trainer import Trainer, INPUT, TARGET, TRAINER_RESULT, TInput, TTarget, TModel
+from machine_learning.training.trainer import Trainer, Input, Target, TrainerResult, TInput, TTarget, TModel
 import torch
 from ..modeling.pytorch_model import PyTorchModel
 
@@ -20,7 +20,7 @@ class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
         self.optimizer: torch.optim.Optimizer = optimizer
         self.clip_max_norm: float = clip_max_norm
 
-    def train_step(self, model: TPyTorchModel, input: INPUT, target: TARGET, logger: Optional[Logger] = None) -> TRAINER_RESULT:
+    def train_step(self, model: TPyTorchModel, input: Input, target: Target, logger: Optional[Logger] = None) -> TrainerResult:
         model.inner_module.train()
         self.loss.train()
 
