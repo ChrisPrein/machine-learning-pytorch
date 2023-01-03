@@ -1,15 +1,16 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Dict, Generic
+from typing import Any, Dict, Generic
 from machine_learning import TModel, TInput, TTarget
-from machine_learning.repositories import ModelRepository
 from wandb.wandb_run import Run
-from ..modeling.pytorch_model import PyTorchModel
+from ..training.pytorch_trainer import PyTorchTrainer, TPyTorchModel
 import torch
+from .pytorch_scheduler_repository import PyTorchSchedulerRepository
+from torch.optim.lr_scheduler import _LRScheduler
 
-__all__ = ['PyTorchModelWandBRepository']
+__all__ = ['PyTorchTrainerWandBRepository']
 
-class PyTorchModelWandBRepository(ModelRepository[PyTorchModel[TInput, TTarget]]):
+class PyTorchSchedulerWandBRepository(PyTorchSchedulerRepository):
     def __init__(self, run: Run):
         super().__init__()
 
@@ -25,20 +26,22 @@ class PyTorchModelWandBRepository(ModelRepository[PyTorchModel[TInput, TTarget]]
         return Path(self.run.dir) / self.get_file_name(name)
 
     @abstractmethod
-    async def get(self, model: PyTorchModel[TInput, TTarget], name: str) -> PyTorchModel[TInput, TTarget]:
+    async def get(self, scheduler: _LRScheduler, name: str) -> _LRScheduler:
         try:
             weight_file = self.run.restore(self.get_file_name(name))
 
-            model.inner_module.load_state_dict(torch.load(weight_file))
+            state_dict: Dict[str, Any] = torch.load(weight_file)
 
-            return model
+            scheduler.load_state_dict(state_dict)
+
+            return scheduler
         except:
             return None
 
     @abstractmethod
-    async def save(self, model: PyTorchModel[TInput, TTarget], name: str):
+    async def save(self, scheduler: _LRScheduler, name: str):
         file_path: Path = self.get_file_path(name)
 
-        torch.save(model.inner_module.state_dict(), str(file_path))
+        torch.save(scheduler.state_dict(), str(file_path))
 
         self.run.save(str(file_path))
