@@ -8,7 +8,7 @@ from machine_learning import Evaluator, TInput, TTarget
 
 TPyTorchModel = TypeVar('TPyTorchModel', bound=PyTorchModel)
 
-class PyTorchTrainer(Evaluator[TInput, TTarget, TPyTorchModel]):
+class PyTorchEvaluator(Evaluator[TInput, TTarget, TPyTorchModel]):
     def __init__(self, loss: torch.nn.Module, optimizer: torch.optim.Optimizer, clip_max_norm: float = 0.):
         super().__init__()
 
@@ -22,7 +22,7 @@ class PyTorchTrainer(Evaluator[TInput, TTarget, TPyTorchModel]):
         self.optimizer: torch.optim.Optimizer = optimizer
         self.clip_max_norm: float = clip_max_norm
 
-    def evaluation_step(self, model: TPyTorchModel, input: Input, target: Target, logger: Optional[Logger] = None) -> EvaluatorResult:
+    def evaluation_step(self, model: TPyTorchModel, input: Input[TInput], target: Target[TTarget], logger: Optional[Logger] = None) -> EvaluatorResult[TTarget]:
         model.inner_module.train()
         self.loss.train()
 

@@ -3,8 +3,8 @@ from typing import Any, Callable, List, Tuple, Union, overload
 from machine_learning.modeling.model import Model, TInput, TTarget, InputBatch, Input, Target
 from torch.nn import Module
 
-PYTORCH_TARGET_BATCH = List[Tuple[TTarget, Any, Any]]
-PYTORCH_TARGET = Union[Tuple[TTarget, Any, Any], PYTORCH_TARGET_BATCH]
+PytorchTargetBatch = List[Tuple[TTarget, Any, Any]]
+PytorchTarget = Union[Tuple[TTarget, Any, Any], PytorchTargetBatch[TTarget]]
 
 class PyTorchModel(Model[TInput, TTarget], ABC):
     def __init__(self, inner_module: Module):
@@ -18,11 +18,11 @@ class PyTorchModel(Model[TInput, TTarget], ABC):
     @overload
     def predict_step_pytorch(self, input: TInput) -> Tuple[TTarget, Any, Any]: ...
     @overload
-    def predict_step_pytorch(self, input: InputBatch) -> PYTORCH_TARGET_BATCH: ...
+    def predict_step_pytorch(self, input: InputBatch[TInput]) -> PytorchTargetBatch[TTarget]: ...
     @abstractmethod
-    def predict_step_pytorch(self, input: Input) -> PYTORCH_TARGET: ...
+    def predict_step_pytorch(self, input: Input[TInput]) -> PytorchTarget[TTarget]: ...
 
-    def predict_step(self, input: Input) -> Target:
+    def predict_step(self, input: Input[TInput]) -> Target[TTarget]:
         return self.predict_step_pytorch(input)[0]
 
     __call__ : Callable[..., Any] = predict_step
