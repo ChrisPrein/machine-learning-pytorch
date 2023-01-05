@@ -24,7 +24,7 @@ class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
         model.inner_module.train()
         self.loss.train()
 
-        predictions, raw_predictions, raw_targets = model.predict_step_pytorch(input)
+        predictions, raw_predictions, raw_targets = model.training_step(input, target)
 
         loss, sub_losses = self.loss(raw_predictions, raw_targets)
 

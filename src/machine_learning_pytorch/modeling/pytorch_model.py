@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Callable, List, Tuple, Union, overload
-from machine_learning.modeling.model import Model, TInput, TTarget, InputBatch, Input, Target
+from machine_learning.modeling.model import Model, TInput, TTarget, InputBatch, Input, Target, TargetBatch
 from torch.nn import Module
 
 PytorchTargetBatch = List[Tuple[TTarget, Any, Any]]
@@ -16,13 +16,14 @@ class PyTorchModel(Model[TInput, TTarget], ABC):
         self.inner_module: Module = inner_module
 
     @overload
-    def predict_step_pytorch(self, input: TInput) -> Tuple[TTarget, Any, Any]: ...
+    def training_step(self, input: TInput, target: TTarget) -> Tuple[TTarget, Any, Any]: ...
     @overload
-    def predict_step_pytorch(self, input: InputBatch[TInput]) -> PytorchTargetBatch[TTarget]: ...
+    def training_step(self, input: InputBatch[TInput], target: TargetBatch[TTarget]) -> PytorchTargetBatch[TTarget]: ...
     @abstractmethod
-    def predict_step_pytorch(self, input: Input[TInput]) -> PytorchTarget[TTarget]: ...
+    def training_step(self, input: Input[TInput], target: Target[TTarget]) -> PytorchTarget[TTarget]: ...
 
     def predict_step(self, input: Input[TInput]) -> Target[TTarget]:
-        return self.predict_step_pytorch(input)[0]
+        self.inner_module.eval()
+        return self.training_step(input)[0]
 
     __call__ : Callable[..., Any] = predict_step
