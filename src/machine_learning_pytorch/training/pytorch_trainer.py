@@ -4,6 +4,8 @@ from machine_learning.training.trainer import Trainer, Input, Target, TrainerRes
 import torch
 from ..modeling.pytorch_model import PyTorchModel
 
+__all__ = ['PyTorchTrainer', 'TPyTorchModel']
+
 TPyTorchModel = TypeVar('TPyTorchModel', bound=PyTorchModel)
 
 class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):

@@ -3,6 +3,8 @@ from typing import Any, Callable, List, Tuple, Union, overload
 from machine_learning.modeling.model import Model, TInput, TTarget, InputBatch, Input, Target, TargetBatch
 from torch.nn import Module
 
+__all__ = ['PyTorchModel', 'PytorchTargetBatch', 'PytorchTarget']
+
 PytorchTargetBatch = List[Tuple[TTarget, Any, Any]]
 PytorchTarget = Union[Tuple[TTarget, Any, Any], PytorchTargetBatch[TTarget]]
 

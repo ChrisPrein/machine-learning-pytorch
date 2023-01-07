@@ -5,6 +5,7 @@ from ..modeling.pytorch_model import PyTorchModel
 from machine_learning.evaluation.evaluator import Evaluator, Input, Target, EvaluatorResult
 from machine_learning import Evaluator, TInput, TTarget
 
+__all__ = ['PyTorchEvaluator', 'TPyTorchModel']
 
 TPyTorchModel = TypeVar('TPyTorchModel', bound=PyTorchModel)
 
