@@ -4,7 +4,7 @@ from machine_learning.training import PreLoop, PostEpoch, TrainingContext, TTrai
 from machine_learning import TInput, TTarget, TModel
 from torch.optim.lr_scheduler import _LRScheduler
 from wandb.wandb_run import Run
-from ...repositories.pytorch_scheduler_repository import PyTorchSchedulerRepository
+from .repositories.pytorch_scheduler_repository import PyTorchSchedulerRepository
 
 __all__ = ['PyTorchSchedulerPlugin']
 
