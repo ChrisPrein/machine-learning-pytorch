@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Generic
 from machine_learning import TModel, TInput, TTarget
 from wandb.wandb_run import Run
-from ..training.pytorch_trainer import PyTorchTrainer, TPyTorchModel
+from ...pytorch_trainer import PyTorchTrainer, TPyTorchModel
 import torch
 from .pytorch_scheduler_repository import PyTorchSchedulerRepository
 from torch.optim.lr_scheduler import _LRScheduler

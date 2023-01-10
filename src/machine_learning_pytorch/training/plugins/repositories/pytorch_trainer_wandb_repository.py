@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Callable, Dict, Generic
 from machine_learning import TModel, TInput, TTarget
-from machine_learning.repositories import TrainerRepository
+from machine_learning.training.plugins.repositories.trainer_repository import TrainerRepository
 from wandb.wandb_run import Run
-from ..training.pytorch_trainer import PyTorchTrainer, TPyTorchModel
+from ...pytorch_trainer import PyTorchTrainer, TPyTorchModel
 import torch
 
 __all__ = ['PyTorchTrainerWandBRepository', 'TrainerFactory']
