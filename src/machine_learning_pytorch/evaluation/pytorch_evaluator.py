@@ -1,5 +1,5 @@
 from logging import Logger
-from typing import Optional, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 import torch
 from ..modeling.pytorch_model import PyTorchModel
 from machine_learning.evaluation.evaluator import Evaluator, Input, Target, EvaluatorResult
@@ -27,3 +27,5 @@ class PyTorchEvaluator(Evaluator[TInput, TTarget, TPyTorchModel]):
         loss, sub_losses = self.loss(raw_predictions, raw_targets)
 
         return predictions, dict(sub_losses)
+
+    __call__ : Callable[..., Any] = evaluation_step

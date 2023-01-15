@@ -1,5 +1,5 @@
 from logging import Logger
-from typing import Optional, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 from machine_learning.training.trainer import Trainer, Input, Target, TrainerResult, TInput, TTarget, TModel
 import torch
 from ..modeling.pytorch_model import PyTorchModel
@@ -40,3 +40,5 @@ class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
         self.optimizer.step()
 
         return predictions, dict(sub_losses)
+
+    __call__ : Callable[..., Any] = train_step
