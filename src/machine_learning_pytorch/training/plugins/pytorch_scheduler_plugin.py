@@ -25,7 +25,7 @@ class PyTorchSchedulerPlugin(PreLoop[TInput, TTarget, TModel, TTrainer], PostEpo
         self.event_loop: asyncio.AbstractEventLoop = event_loop if event_loop != None else asyncio.get_event_loop()
 
     def pre_loop(self, logger: Logger, training_context: TrainingContext[TInput, TTarget, TModel, TTrainer]):
-        self.scheduler = self.event_loop.run_until_complete(self.repository.get(self.scheduler, LATEST_SCHEDULER_NAME))
+        self.scheduler = self.event_loop.run_until_complete(self.repository.get(LATEST_SCHEDULER_NAME))
 
     def post_epoch(self, logger: Logger, training_context: TrainingContext[TInput, TTarget, TModel, TTrainer]):
         self.scheduler.step()
