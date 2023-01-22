@@ -1,5 +1,5 @@
 from logging import Logger
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, Callable, Dict, Optional, Tuple, TypeVar, Union
 from machine_learning.training.trainer import Trainer, Input, Target, TrainerResult, TInput, TTarget, TModel
 import torch
 from ..modeling.pytorch_model import PyTorchModel
@@ -28,7 +28,13 @@ class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
 
         predictions, raw_predictions, raw_targets = model.training_step(input, target)
 
-        loss, sub_losses = self.loss(raw_predictions, raw_targets)
+        loss_result: Union[torch.Tensor, Tuple[torch.Tensor, Dict[str, torch.Tensor]]] = self.loss(raw_predictions, raw_targets)
+
+        if not isinstance(loss_result, tuple):
+            loss = loss_result
+            sub_losses = {}
+        else:
+            loss, sub_losses = loss_result
 
         self.optimizer.zero_grad()
 
