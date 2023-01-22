@@ -33,6 +33,6 @@ class PyTorchEvaluator(Evaluator[TInput, TTarget, TPyTorchModel]):
             return loss
         else:
             loss, sub_losses = loss_result
-            return predictions, dict(sub_losses)
+            return predictions, {loss_name: loss_value.item() for loss_name, loss_value in sub_losses.items()}
 
     __call__ : Callable[..., Any] = evaluation_step

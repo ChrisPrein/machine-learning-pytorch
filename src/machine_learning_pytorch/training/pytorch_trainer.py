@@ -48,8 +48,8 @@ class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
         self.optimizer.step()
 
         if has_sublosses:
-            return predictions, dict(sub_losses)
+            return predictions, {loss_name: loss_value.item() for loss_name, loss_value in sub_losses.items()}
         else:
-            return predictions, loss
+            return predictions, loss.item()
 
     __call__ : Callable[..., Any] = train_step
