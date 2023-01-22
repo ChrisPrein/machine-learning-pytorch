@@ -30,9 +30,11 @@ class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
 
         loss_result: Union[torch.Tensor, Tuple[torch.Tensor, Dict[str, torch.Tensor]]] = self.loss(raw_predictions, raw_targets)
 
-        if not isinstance(loss_result, tuple):
+        has_sublosses = isinstance(loss_result, tuple)
+
+        if not has_sublosses:
             loss = loss_result
-            sub_losses = {'loss': loss}
+            sub_losses = None
         else:
             loss, sub_losses = loss_result
 
@@ -45,6 +47,9 @@ class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
 
         self.optimizer.step()
 
-        return predictions, dict(sub_losses)
+        if has_sublosses:
+            return predictions, dict(sub_losses)
+        else:
+            return predictions, loss
 
     __call__ : Callable[..., Any] = train_step

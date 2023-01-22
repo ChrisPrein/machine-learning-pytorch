@@ -26,12 +26,13 @@ class PyTorchEvaluator(Evaluator[TInput, TTarget, TPyTorchModel]):
 
         loss_result: Union[torch.Tensor, Tuple[torch.Tensor, Dict[str, torch.Tensor]]] = self.loss(raw_predictions, raw_targets)
 
-        if not isinstance(loss_result, tuple):
+        has_sublosses = isinstance(loss_result, tuple)
+
+        if not has_sublosses:
             loss = loss_result
-            sub_losses = {'loss': loss}
+            return loss
         else:
             loss, sub_losses = loss_result
-
-        return predictions, dict(sub_losses)
+            return predictions, dict(sub_losses)
 
     __call__ : Callable[..., Any] = evaluation_step
