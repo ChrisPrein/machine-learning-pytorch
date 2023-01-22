@@ -32,7 +32,7 @@ class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
 
         if not isinstance(loss_result, tuple):
             loss = loss_result
-            sub_losses = {}
+            sub_losses = {'loss': loss}
         else:
             loss, sub_losses = loss_result
 

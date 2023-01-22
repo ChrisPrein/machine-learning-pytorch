@@ -1,5 +1,5 @@
 from logging import Logger
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, Callable, Dict, Optional, Tuple, TypeVar, Union
 import torch
 from ..modeling.pytorch_model import PyTorchModel
 from machine_learning.evaluation.evaluator import Evaluator, Input, Target, EvaluatorResult
@@ -24,7 +24,13 @@ class PyTorchEvaluator(Evaluator[TInput, TTarget, TPyTorchModel]):
 
         predictions, raw_predictions, raw_targets = model.training_step(input, target)
 
-        loss, sub_losses = self.loss(raw_predictions, raw_targets)
+        loss_result: Union[torch.Tensor, Tuple[torch.Tensor, Dict[str, torch.Tensor]]] = self.loss(raw_predictions, raw_targets)
+
+        if not isinstance(loss_result, tuple):
+            loss = loss_result
+            sub_losses = {'loss': loss}
+        else:
+            loss, sub_losses = loss_result
 
         return predictions, dict(sub_losses)
 
