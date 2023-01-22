@@ -30,7 +30,7 @@ class PyTorchEvaluator(Evaluator[TInput, TTarget, TPyTorchModel]):
 
         if not has_sublosses:
             loss = loss_result
-            return loss.item()
+            return predictions, loss.item()
         else:
             loss, sub_losses = loss_result
             return predictions, {loss_name: loss_value.item() for loss_name, loss_value in sub_losses.items()}
