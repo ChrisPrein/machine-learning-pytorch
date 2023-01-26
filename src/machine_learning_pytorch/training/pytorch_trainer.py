@@ -1,14 +1,15 @@
 from logging import Logger
-from typing import Any, Callable, Dict, Optional, Tuple, TypeVar, Union
+from typing import Any, Callable, Dict, Generic, Optional, Tuple, TypeVar, Union
 from machine_learning.training.trainer import Trainer, Input, Target, TrainerResult, TInput, TTarget, TModel
+from machine_learning import TOutput
 import torch
-from ..modeling.pytorch_model import PyTorchModel
+from ..modeling.pytorch_model import PyTorchModel, TTrainStepOutput
 
 __all__ = ['PyTorchTrainer', 'TPyTorchModel']
 
 TPyTorchModel = TypeVar('TPyTorchModel', bound=PyTorchModel)
 
-class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
+class PyTorchTrainer(Generic[TInput, TTarget, TOutput, TTrainStepOutput, TPyTorchModel], Trainer[TInput, TTarget, TPyTorchModel]):
     def __init__(self, loss: torch.nn.Module, optimizer: torch.optim.Optimizer, clip_max_norm: float = 0.):
         super().__init__()
 
@@ -22,13 +23,13 @@ class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
         self.optimizer: torch.optim.Optimizer = optimizer
         self.clip_max_norm: float = clip_max_norm
 
-    def train_step(self, model: TPyTorchModel, input: Input[TInput], target: Target[TTarget], logger: Optional[Logger] = None) -> TrainerResult[TTarget]:
+    def train_step(self, model: TPyTorchModel, input: Input[TInput], target: Target[TTarget], logger: Optional[Logger] = None) -> TrainerResult[TOutput]:
         model.inner_module.train()
         self.loss.train()
 
-        predictions, raw_predictions, raw_targets = model.training_step(input, target)
+        train_out: TTrainStepOutput = model.training_step(input, target)
 
-        loss_result: Union[torch.Tensor, Tuple[torch.Tensor, Dict[str, torch.Tensor]]] = self.loss(raw_predictions, raw_targets)
+        loss_result: Union[torch.Tensor, Tuple[torch.Tensor, Dict[str, torch.Tensor]]] = self.loss(train_out.module_output, train_out.converted_target)
 
         has_sublosses = isinstance(loss_result, tuple)
 
@@ -48,8 +49,8 @@ class PyTorchTrainer(Trainer[TInput, TTarget, TPyTorchModel]):
         self.optimizer.step()
 
         if has_sublosses:
-            return predictions, {loss_name: loss_value.item() for loss_name, loss_value in sub_losses.items()}
+            return train_out.model_output, {loss_name: loss_value.item() for loss_name, loss_value in sub_losses.items()}
         else:
-            return predictions, loss.item()
+            return train_out.model_output, loss.item()
 
     __call__ : Callable[..., Any] = train_step
