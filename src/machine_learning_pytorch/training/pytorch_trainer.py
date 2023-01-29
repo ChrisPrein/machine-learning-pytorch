@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, Generic, Optional, Tuple, TypeVar, Union
 from machine_learning.training.trainer import Trainer, Input, Target, TrainerResult, TInput, TTarget, TModel
 from machine_learning import TOutput
 import torch
+from torch import device
 from ..modeling.pytorch_model import PyTorchModel, TTrainStepOutput
 
 __all__ = ['PyTorchTrainer', 'TPyTorchModel']
@@ -10,7 +11,7 @@ __all__ = ['PyTorchTrainer', 'TPyTorchModel']
 TPyTorchModel = TypeVar('TPyTorchModel', bound=PyTorchModel)
 
 class PyTorchTrainer(Generic[TInput, TTarget, TOutput, TTrainStepOutput, TPyTorchModel], Trainer[TInput, TTarget, TPyTorchModel]):
-    def __init__(self, loss: torch.nn.Module, optimizer: torch.optim.Optimizer, clip_max_norm: float = 0.):
+    def __init__(self, loss: torch.nn.Module, optimizer: torch.optim.Optimizer, clip_max_norm: float = 0., device: device = device('cpu')):
         super().__init__()
 
         if loss is None:
@@ -22,8 +23,14 @@ class PyTorchTrainer(Generic[TInput, TTarget, TOutput, TTrainStepOutput, TPyTorc
         self.loss: torch.nn.Module = loss
         self.optimizer: torch.optim.Optimizer = optimizer
         self.clip_max_norm: float = clip_max_norm
+        self.device = device
+
+        self.loss.to(self.device)
 
     def train_step(self, model: TPyTorchModel, input: Input[TInput], target: Target[TTarget], logger: Optional[Logger] = None) -> TrainerResult[TOutput]:
+        if model.device != self.device:
+            raise ValueError("Model device has to match trainer device!")
+        
         model.inner_module.train()
         self.loss.train()
 

@@ -1,6 +1,7 @@
 from logging import Logger
 from typing import Any, Callable, Dict, Generic, Optional, Tuple, TypeVar, Union
 import torch
+from torch import device
 from ..modeling.pytorch_model import PyTorchModel, TTrainStepOutput
 from machine_learning.modeling import Output
 from machine_learning.evaluation.evaluator import Evaluator, Input, Target, EvaluatorResult
@@ -11,15 +12,21 @@ __all__ = ['PyTorchEvaluator', 'TPyTorchModel']
 TPyTorchModel = TypeVar('TPyTorchModel', bound=PyTorchModel)
 
 class PyTorchEvaluator(Generic[TInput, TTarget, TOutput, TTrainStepOutput, TPyTorchModel], Evaluator[TInput, TTarget, TOutput, TPyTorchModel]):
-    def __init__(self, loss: torch.nn.Module):
+    def __init__(self, loss: torch.nn.Module, device: device = device('cpu')):
         super().__init__()
 
         if loss is None:
             raise TypeError("loss")
 
         self.loss: torch.nn.Module = loss
+        self.device: device = device
+
+        self.loss.to(self.device)
 
     def evaluation_step(self, model: TPyTorchModel, input: Input[TInput], target: Target[TTarget], logger: Optional[Logger] = None) -> EvaluatorResult[TOutput]:
+        if model.device != self.device:
+            raise ValueError("Model device has to match evaluator device!")
+        
         model.inner_module.eval()
         self.loss.eval()
 
