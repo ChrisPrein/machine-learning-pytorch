@@ -3,7 +3,6 @@ from logging import Logger
 from machine_learning.training import PreLoop, PostEpoch, TrainingContext, TTrainer
 from machine_learning import TInput, TTarget, TModel, TOutput
 from torch.optim.lr_scheduler import _LRScheduler
-from wandb.wandb_run import Run
 from .repositories.pytorch_scheduler_repository import PyTorchSchedulerRepository
 
 __all__ = ['PyTorchSchedulerPlugin']

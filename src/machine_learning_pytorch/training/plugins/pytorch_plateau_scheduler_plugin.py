@@ -1,14 +1,13 @@
 import asyncio
 from logging import Logger
 from typing import Any, Dict, Optional, TypeGuard
-from machine_learning.training import PreLoop, PostEpoch, TrainingContext, TTrainer, PostValidationPlugin
+from machine_learning.training import PreLoop, TrainingContext, TTrainer, PostValidationPlugin
 from machine_learning.evaluation import EvaluationResult
 from machine_learning import TInput, TTarget, TModel, TOutput
 from torch.optim.lr_scheduler import _LRScheduler
-from wandb.wandb_run import Run
 from .repositories.pytorch_scheduler_repository import PyTorchSchedulerRepository
 
-__all__ = ['PyTorchSchedulerPlugin']
+__all__ = ['PyTorchPlateauSchedulerPlugin']
 
 LATEST_SCHEDULER_NAME: str = "latest-scheduler"
 
