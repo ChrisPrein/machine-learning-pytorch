@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Generic, List, Tuple, TypeVar, Union, overload
-from machine_learning.modeling.model import Model, TInput, TTarget, TOutput, InputBatch, Input, Output, OutputBatch, ModelOuput
+from typing import Any, Callable, Generic, List, TypeVar, Union, overload
+from machine_learning.modeling.model import Model, TInput, TTarget, TOutput, InputBatch, Input, Output
 from torch.nn import Module
 from torch import Tensor, device
 

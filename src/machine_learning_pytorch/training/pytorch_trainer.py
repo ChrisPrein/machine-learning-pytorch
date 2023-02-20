@@ -1,6 +1,6 @@
 from logging import Logger
 from typing import Any, Callable, Dict, Generic, Optional, Tuple, TypeVar, Union
-from machine_learning.training.trainer import Trainer, Input, Target, TrainerResult, TInput, TTarget, TModel
+from machine_learning.training.trainer import Trainer, Input, Target, TrainerResult, TInput, TTarget
 from machine_learning import TOutput
 import torch
 from torch import device

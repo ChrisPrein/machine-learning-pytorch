@@ -3,7 +3,6 @@ from typing import Any, Callable, Dict, Generic, Optional, Tuple, TypeVar, Union
 import torch
 from torch import device
 from ..modeling.pytorch_model import PyTorchModel, TTrainStepOutput
-from machine_learning.modeling import Output
 from machine_learning.evaluation.evaluator import Evaluator, Input, Target, EvaluatorResult
 from machine_learning import Evaluator, TInput, TTarget, TOutput
 

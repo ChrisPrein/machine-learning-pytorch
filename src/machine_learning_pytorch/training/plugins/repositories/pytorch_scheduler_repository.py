@@ -1,11 +1,5 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, Generic
-from machine_learning import TModel, TInput, TTarget
-from machine_learning.training.plugins.repositories.trainer_repository import TrainerRepository
-from wandb.wandb_run import Run
-from ...pytorch_trainer import PyTorchTrainer, TPyTorchModel
-import torch
 from torch.optim.lr_scheduler import _LRScheduler
 
 __all__ = ['PyTorchSchedulerRepository']

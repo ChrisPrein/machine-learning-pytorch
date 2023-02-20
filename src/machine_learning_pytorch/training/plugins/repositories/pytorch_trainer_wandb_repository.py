@@ -1,7 +1,6 @@
-from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Callable, Dict, Generic
-from machine_learning import TModel, TInput, TTarget, TOutput
+from typing import Any, Callable, Dict
+from machine_learning import TInput, TTarget, TOutput
 from machine_learning.training.plugins.repositories.trainer_repository import TrainerRepository
 from wandb.wandb_run import Run
 from ...pytorch_trainer import PyTorchTrainer, TPyTorchModel, TTrainStepOutput
