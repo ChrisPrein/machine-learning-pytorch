@@ -31,7 +31,7 @@ class PyTorchSchedulerWandBRepository(PyTorchSchedulerRepository):
 
     async def get(self, name: str) -> _LRScheduler:
         try:
-            file_path: Path = self.files_dir / name
+            file_path: Path = self.files_dir / self.get_file_name(name)
 
             state_dict: Dict[str, Any] = torch.load(str(file_path))
 

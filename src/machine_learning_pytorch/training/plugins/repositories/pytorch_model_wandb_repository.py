@@ -30,7 +30,7 @@ class PyTorchModelWandBRepository(ModelRepository[PyTorchModel[TInput, TTarget, 
 
     async def get(self, name: str) -> PyTorchModel[TInput, TTarget, TOutput, TTrainStepOutput]:
         try:
-            file_path: Path = self.files_dir / name
+            file_path: Path = self.files_dir / self.get_file_name(name)
 
             model = self.model_factory()
 

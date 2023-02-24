@@ -32,7 +32,7 @@ class PyTorchTrainerWandBRepository(TrainerRepository[PyTorchTrainer[TInput, TTa
 
     async def get(self, name: str) -> PyTorchTrainer[TInput, TTarget, TOutput, TTrainStepOutput, TPyTorchModel]:
         try:
-            file_path: Path = self.files_dir / name
+            file_path: Path = self.files_dir / self.get_file_name(name)
 
             state_dict: Dict[str, Any] = torch.load(str(file_path))
 
