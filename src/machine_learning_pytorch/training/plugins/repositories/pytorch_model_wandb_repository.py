@@ -20,6 +20,7 @@ class PyTorchModelWandBRepository(ModelRepository[PyTorchModel[TInput, TTarget, 
 
         self.run: Run = run
         self.model_factory: Callable[[], PyTorchModel[TInput, TTarget, TOutput, TTrainStepOutput]] = model_factory
+        self.files_dir: Path = Path(self.run.settings.files_dir)
 
     def get_file_name(self, name) -> str:
         return f'{name}.pth'
@@ -29,11 +30,11 @@ class PyTorchModelWandBRepository(ModelRepository[PyTorchModel[TInput, TTarget, 
 
     async def get(self, name: str) -> PyTorchModel[TInput, TTarget, TOutput, TTrainStepOutput]:
         try:
-            weight_file = self.run.restore(self.get_file_name(name))
+            file_path: Path = self.files_dir / name
 
             model = self.model_factory()
 
-            model.inner_module.load_state_dict(torch.load(weight_file))
+            model.inner_module.load_state_dict(torch.load(str(file_path)))
 
             return model
         except:

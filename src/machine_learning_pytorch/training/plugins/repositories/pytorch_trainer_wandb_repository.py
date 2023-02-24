@@ -22,6 +22,7 @@ class PyTorchTrainerWandBRepository(TrainerRepository[PyTorchTrainer[TInput, TTa
 
         self.run: Run = run
         self.trainer_factory: TrainerFactory[TInput, TTarget, TOutput, TTrainStepOutput, TPyTorchModel] = trainer_factory
+        self.files_dir: Path = Path(self.run.settings.files_dir)
 
     def get_file_name(self, name) -> str:
         return f'{name}.pth'
@@ -31,9 +32,9 @@ class PyTorchTrainerWandBRepository(TrainerRepository[PyTorchTrainer[TInput, TTa
 
     async def get(self, name: str) -> PyTorchTrainer[TInput, TTarget, TOutput, TTrainStepOutput, TPyTorchModel]:
         try:
-            weight_file = self.run.restore(self.get_file_name(name))
+            file_path: Path = self.files_dir / name
 
-            state_dict: Dict[str, Any] = torch.load(weight_file)
+            state_dict: Dict[str, Any] = torch.load(str(file_path))
 
             trainer = self.trainer_factory()
 

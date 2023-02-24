@@ -21,6 +21,7 @@ class PyTorchSchedulerWandBRepository(PyTorchSchedulerRepository):
 
         self.run: Run = run
         self.scheduler_factory: SchedulerFactory = scheduler_factory
+        self.files_dir: Path = Path(self.run.settings.files_dir)
 
     def get_file_name(self, name) -> str:
         return f'{name}.pth'
@@ -30,9 +31,9 @@ class PyTorchSchedulerWandBRepository(PyTorchSchedulerRepository):
 
     async def get(self, name: str) -> _LRScheduler:
         try:
-            weight_file = self.run.restore(self.get_file_name(name))
+            file_path: Path = self.files_dir / name
 
-            state_dict: Dict[str, Any] = torch.load(weight_file)
+            state_dict: Dict[str, Any] = torch.load(str(file_path))
 
             scheduler = self.scheduler_factory()
 
